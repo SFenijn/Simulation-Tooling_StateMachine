@@ -27,7 +27,7 @@ class StateMachine:
                     print("reached ", newState)
                     return newState
                 else:
-                    print("Error: ", newState, " state is not an endstate.")
+                    print("Error:", newState, "is geen endstate.")
                     return newState
             else:
                 handler = self.handlers[newState.upper()]
