@@ -1,4 +1,5 @@
 from Statemachine import StateMachine
+import random
 
 def beneden_l_transitions(txt,time):
     splitted_txt = txt.split(None, 1)
@@ -85,7 +86,24 @@ def transport_human(time,newState):
     print("De tijd is nu: ",time)
     return time
 
-if __name__== "__main__":
+
+def randomPicker(lst):
+    # returns random item from list
+    return random.choice(lst)
+
+
+def createWachtrij(taal, num):
+    i = 0
+    wachtrij = []
+    while num >= i:
+        wachtrij.append(randomPicker(taal))
+        i += 1
+    print("wachtrij setup klaar...")
+    return wachtrij
+
+
+def simulation(num0, num1):
+    """"Simulatie van invalide lift: input = aantal mensen per verdieping"""
     m = StateMachine()
     m.add_state("beneden_l", beneden_l_transitions)
     m.add_state("beneden_v", beneden_v_transitions)
@@ -94,11 +112,42 @@ if __name__== "__main__":
     m.add_state("beneden_l", beneden_l_transitions, end_state=1)
     m.add_state("boven_l", boven_l_transitions, end_state=1)
     m.add_state("error_state", None, end_state=1)
-    m.add_state("end_state", None, end_state=1)
-    m.set_start("beneden_l")
+    newstate = "beneden_l"
+    m.set_start(newstate)
 
-    m.run("l l l  l v v v k l")
-    m.run("v k k l")
-    m.run("k v v v  l v")
-    m.run("l")
-    m.run("v k k k k l v k k k l")
+    # v staat voor er gaat iemand in de lift
+    # l staat voor, er gaat iemand uit de lift
+    # k staat voor, de lift gaat naar boven of beneden
+    # als er meer dan twee verdiepingen zijn kan de k woden vervangen voor specefieke verdiepingen
+
+    taal_0 = ["v k l"] # de taal kan ook meerdere commands bevatten. (zolang ze niet op "v" eindigen)
+    taal_1 = ["v k l"]
+    wachtrij_0 = createWachtrij(taal_0, num0)
+    wachtrij_1 = createWachtrij(taal_1, num1)
+
+    while len(wachtrij_0) > 0 or len(wachtrij_1) > 0:
+        if newstate == "beneden_l":
+            if len(wachtrij_0) <= 0:
+                newstate = m.run("k")
+                m.set_start(newstate)
+            else:
+                string = wachtrij_0[0]
+                del wachtrij_0[0]
+                newstate = m.run(string)
+                m.set_start(newstate)
+        else:
+            if len(wachtrij_1) <= 0:
+                newstate = m.run("k")
+                m.set_start(newstate)
+            else:
+                string = wachtrij_1[0]
+                del wachtrij_1[0]
+                newstate = m.run(string)
+                m.set_start(newstate)
+    print("Simulatie is klaar!")
+
+
+if __name__== "__main__":
+    rij_v0 = 20
+    rij_v1 = 15
+    simulation(rij_v0, rij_v1)
