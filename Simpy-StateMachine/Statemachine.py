@@ -24,12 +24,12 @@ class StateMachine:
         while True:
             (newState, cargo, self.time) = handler(cargo,self.time)
             if len(cargo) == 0:
-                self.time=0
+                # self.time=0
                 if newState.upper() in self.endStates:
                     print("reached ", newState)
                     return newState
                 else:
-                    print("Error: ", newState, " state is not an endstate.")
+                    print("Error:", newState, "is geen endstate.")
                     return newState
             else:
                 handler = self.handlers[newState.upper()]
