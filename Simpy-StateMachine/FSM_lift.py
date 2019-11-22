@@ -125,6 +125,7 @@ def simulation(num0, num1):
     wachtrij_0 = createWachtrij(taal_0, num0)
     wachtrij_1 = createWachtrij(taal_1, num1)
 
+
     while len(wachtrij_0) > 0 or len(wachtrij_1) > 0:
         if newstate == "beneden_l":
             if len(wachtrij_0) <= 0:
